@@ -11,15 +11,18 @@ function updateClock({ days, hours, minutes, seconds }) {
 class Timer {
   constructor({ onTick }) {
     //нужен если нужно будет остановить таймер
-    // this.intevalID = null;
+    this.intevalID = null;
     this.onTick = onTick;
   }
   start(toDate) {
     const targetTime = toDate;
-    // this.intevalID =
-    setInterval(() => {
+    this.intevalID = setInterval(() => {
       const currentTime = Date.now();
       const deltaTime = targetTime - currentTime;
+      if (deltaTime < 0) {
+        clearInterval(this.intevalID);
+        return;
+      }
       const timeComponents = this.convertMs(deltaTime);
       this.onTick(timeComponents);
     }, 1000);
