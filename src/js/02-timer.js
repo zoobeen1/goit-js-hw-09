@@ -1,5 +1,8 @@
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
+import { Notify } from 'notiflix/build/notiflix-notify-aio';
+import 'notiflix/dist/notiflix-3.2.5.min.css';
+
 //functions
 function updateClock({ days, hours, minutes, seconds }) {
   refs.dataDays.textContent = days;
@@ -60,7 +63,8 @@ const options = {
   onClose(selectedDates) {
     const selDate = selectedDates[0];
     if (selDate < dateNow) {
-      alert('Please choose a date in the future');
+      Notify.failure('Please choose a date in the future');
+      // alert('Please choose a date in the future');
     } else {
       refs.btnStart.disabled = false;
     }
