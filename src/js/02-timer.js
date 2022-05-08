@@ -1,11 +1,11 @@
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
 //functions
-function updateClock({ days, hours, mins, secs }) {
+function updateClock({ days, hours, minutes, seconds }) {
   refs.dataDays.textContent = days;
   refs.dataHours.textContent = hours;
-  refs.dataMins.textContent = mins;
-  refs.dataSecs.textContent = secs;
+  refs.dataMins.textContent = minutes;
+  refs.dataSecs.textContent = seconds;
 }
 //classes
 class Timer {
@@ -20,18 +20,22 @@ class Timer {
     setInterval(() => {
       const currentTime = Date.now();
       const deltaTime = targetTime - currentTime;
-      const timeComponents = this.getTimeComponents(deltaTime);
+      const timeComponents = this.convertMs(deltaTime);
       this.onTick(timeComponents);
     }, 1000);
   }
-  getTimeComponents(time) {
-    const days = this.pad(Math.floor(time / (1000 * 60 * 60 * 24)));
-    const hours = this.pad(Math.floor((time % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)));
-    const mins = this.pad(Math.floor((time % (1000 * 60 * 60)) / (1000 * 60)));
-    const secs = this.pad(Math.floor((time % (1000 * 60)) / 1000));
-    return { days, hours, mins, secs };
+  convertMs(ms) {
+    const second = 1000;
+    const minute = second * 60;
+    const hour = minute * 60;
+    const day = hour * 24;
+    const days = this.addLeadingZero(Math.floor(ms / day));
+    const hours = this.addLeadingZero(Math.floor((ms % day) / hour));
+    const minutes = this.addLeadingZero(Math.floor(((ms % day) % hour) / minute));
+    const seconds = this.addLeadingZero(Math.floor((((ms % day) % hour) % minute) / second));
+    return { days, hours, minutes, seconds };
   }
-  pad(value) {
+  addLeadingZero(value) {
     return String(value).padStart(2, '0');
   }
 }
