@@ -20,6 +20,7 @@ img {
 .timer {
   display: flex;
   flex-direction: row;
+  margin-top: 20px;
 }
 .field {
   display: flex;
@@ -37,5 +38,5 @@ img {
 .label {
   text-align: center;
   font-weight: 500;
-  font-size: 14px;
+  font-size: 12px;
 }
