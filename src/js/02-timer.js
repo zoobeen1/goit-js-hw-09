@@ -2,32 +2,25 @@ import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
 import 'notiflix/dist/notiflix-3.2.5.min.css';
-//functions
-function updateClock({ days, hours, minutes, seconds }) {
-  refs.dataDays.textContent = days;
-  refs.dataHours.textContent = hours;
-  refs.dataMins.textContent = minutes;
-  refs.dataSecs.textContent = seconds;
-}
 //classes
 class Timer {
   constructor({ onTick }) {
-    //нужен если нужно будет остановить таймер
     this.intevalID = null;
     this.onTick = onTick;
   }
   start(toDate) {
     const targetTime = toDate;
     this.intevalID = setInterval(() => {
-      const currentTime = Date.now();
-      const deltaTime = targetTime - currentTime;
+      const deltaTime = targetTime - Date.now();
       if (deltaTime < 0) {
         clearInterval(this.intevalID);
         return;
       }
-      const timeComponents = this.convertMs(deltaTime);
-      this.onTick(timeComponents);
+      this.onTick(this.convertMs(deltaTime));
     }, 1000);
+  }
+  stop() {
+    if (this.intevalID) clearInterval(this.intevalID);
   }
   convertMs(ms) {
     const second = 1000;
@@ -45,7 +38,6 @@ class Timer {
   }
 }
 //variables
-const dateNow = Date.now();
 const refs = {
   input: document.querySelector('input'),
   btnStart: document.querySelector('button[data-start]'),
@@ -61,19 +53,27 @@ const options = {
   minuteIncrement: 1,
   onClose(selectedDates) {
     const selDate = selectedDates[0];
-    if (selDate < dateNow) {
+    if (selDate < Date.now()) {
       Notify.failure('Please choose a date in the future');
-      // alert('Please choose a date in the future');
     } else {
       refs.btnStart.disabled = false;
     }
   },
 };
 const timer = new Timer({ onTick: updateClock });
+//functions - this function will refresh the clock on html
+function updateClock({ days, hours, minutes, seconds }) {
+  refs.dataDays.textContent = days;
+  refs.dataHours.textContent = hours;
+  refs.dataMins.textContent = minutes;
+  refs.dataSecs.textContent = seconds;
+}
+
 //main code
 flatpickr('#datetime-picker', options);
 refs.btnStart.disabled = true;
 refs.btnStart.addEventListener('click', () => {
   refs.btnStart.disabled = true;
+  timer.stop();
   timer.start(Date.parse(refs.input.value));
 });
