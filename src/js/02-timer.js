@@ -21,6 +21,7 @@ class Timer {
   }
   stop() {
     if (this.intevalID) clearInterval(this.intevalID);
+    this.intevalID = null;
   }
   convertMs(ms) {
     const second = 1000;
