@@ -13,7 +13,7 @@ class Timer {
     this.intevalID = setInterval(() => {
       const deltaTime = targetTime - Date.now();
       if (deltaTime < 0) {
-        clearInterval(this.intevalID);
+        this.stop();
         return;
       }
       this.onTick(this.convertMs(deltaTime));
